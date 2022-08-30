@@ -1,8 +1,6 @@
 from functions import *
-from linked_list import LinkedList
 
-#VARIABLES GLOVALES
-pacientes = LinkedList()
+lista_pacientes = LinkedList()
 
 def run():
     
@@ -15,14 +13,13 @@ def run():
         
         if selection == 1:
             rute = leerArchivo()
-            1
             if rute != None:
-                lecturaArchivosXml(rute)
+                lista_pacientes =  lecturaArchivosXml(rute)
             else:
                 print("No se realizaron cambios")
 
         elif selection == 2:
-            pass
+            pacientes_opciones(lista_pacientes)
         elif selection == 3:
             pass
         elif selection == 4:

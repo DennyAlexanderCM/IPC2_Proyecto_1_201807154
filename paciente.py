@@ -1,9 +1,9 @@
-
 class Paciente:
     def __init__(self, nombre, edad):
         self.nombre = nombre
         self.edad = edad
         self.datos = None
+        self.lista_datos = None
         self.estado = None
     
     def getEdad(self):
@@ -14,6 +14,9 @@ class Paciente:
     
     def getDatos(self):
         return self.datos
+    
+    def getDatoLista(self):
+        return self.lista_datos
     
     def getEstado(self):
         return self.estado

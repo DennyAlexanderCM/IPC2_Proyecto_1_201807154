@@ -49,15 +49,10 @@ class Lista_Encabezado():
         return None
 
 class Nodo_Contendor():
-    def __init__(self, x, y, data):
+    def __init__(self, positionX, positionY, data):
         self.data = data
-        self.value = 0
-        self.capacidad = 0
-        self.anterior = None
-        self.visited = False
-        self.camino = False
-        self.positionX = x
-        self.positionY = y
+        self.positionX = positionX
+        self.positionY = positionY
         self.up = None
         self.down = None
         self.right = None
@@ -67,6 +62,7 @@ class Lista_Ortogonal():
     def __init__(self):
         self.filas = Lista_Encabezado()
         self.columnas = Lista_Encabezado()
+        self.periodos = 0
     
     #MÉTODO PARA INGRESAR UN NUEVO NODO EN LA POSICION X Y Y
     def insert(self, pos_x, pos_y, data):
@@ -156,7 +152,7 @@ class Lista_Ortogonal():
             txt=""
             pivote:Nodo_Contendor = aux.access
             while pivote:
-                txt += str(pivote.data)+" "+str(pivote.positionY)+" "+str(pivote.positionX)+"\t"
+                txt += str(pivote.data)+"\t"
                 pivote = pivote.right
             print(txt)
             aux = aux.nref
@@ -174,3 +170,78 @@ class Lista_Ortogonal():
                     pivote = pivote.right
             aux_1 = aux_1.nref
         return None
+    
+    def analizarDatos(self):
+        aux_1 = self.filas.start_node
+        aux_2 = Lista_Ortogonal()
+        while aux_1:
+            pivote:Nodo_Contendor = aux_1.access
+            while pivote:
+                sana = 0
+                enferma = 0
+                #si existe izquierda
+                if pivote.left:
+                    dato_rejilla = pivote.left.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                if pivote.right:
+                    dato_rejilla = pivote.right.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                if pivote.up:
+                    dato_rejilla = pivote.up.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                if pivote.down:
+                    dato_rejilla = pivote.down.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                #--------------------------------
+                if pivote.left and pivote.up and pivote.left.up:
+                    dato_rejilla = pivote.left.up.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                if pivote.right and pivote.up and pivote.right.up:
+                    dato_rejilla = pivote.right.up.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                if pivote.left and pivote.down and pivote.left.down:
+                    dato_rejilla = pivote.left.down.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                if pivote.right and pivote.down and pivote.right.down:
+                    dato_rejilla = pivote.right.down.data
+                    if dato_rejilla == 0:
+                        sana += 1
+                    else:
+                        enferma += 1
+                
+                if pivote.data == 0:
+                    if enferma == 3:
+                        aux_2.insert(pivote.positionX, pivote.positionY, 1)
+                    else:
+                        aux_2.insert(pivote.positionX, pivote.positionY, 0)
+                else:
+                    if enferma == 3 or enferma == 2:
+                        aux_2.insert(pivote.positionX, pivote.positionY, 1)
+                    else:
+                        aux_2.insert(pivote.positionX, pivote.positionY, 0)
+                pivote = pivote.right
+            aux_1 = aux_1.nref
+
+        return aux_2
+
