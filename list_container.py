@@ -1,3 +1,5 @@
+from graphviz import Digraph
+from linked_list import LinkedList
 #CABEZA PRINCIPAL
 class Nodo_Head():
     def __init__(self, position):
@@ -62,7 +64,7 @@ class Lista_Ortogonal():
     def __init__(self):
         self.filas = Lista_Encabezado()
         self.columnas = Lista_Encabezado()
-        self.periodos = 0
+        self.periodo = 0
     
     #MÉTODO PARA INGRESAR UN NUEVO NODO EN LA POSICION X Y Y
     def insert(self, pos_x, pos_y, data):
@@ -170,7 +172,19 @@ class Lista_Ortogonal():
                     pivote = pivote.right
             aux_1 = aux_1.nref
         return None
-    
+
+    def searchDate(self, positionX, positionY):
+        aux_1 = self.filas.start_node
+        while aux_1:
+            if aux_1.position == positionY:
+                pivote:Nodo_Contendor = aux_1.access
+                while pivote:
+                    if pivote.positionX == positionX:
+                        return pivote.data
+                    pivote = pivote.right
+            aux_1 = aux_1.nref
+        return None   
+
     def analizarDatos(self):
         aux_1 = self.filas.start_node
         aux_2 = Lista_Ortogonal()
@@ -245,3 +259,43 @@ class Lista_Ortogonal():
 
         return aux_2
 
+    def length(self):
+        aux = self.filas.start_node
+        i = 0
+        while aux:
+            i += 1
+            aux = aux.nref
+        return i
+    
+    def printDates(self, name):
+        aux_1 = self.filas.start_node
+        aux_2 = self.columnas.start_node
+        
+        s = Digraph('html_table')
+        s.attr(label = "Periodo: "+str(self.periodo), fontsize='35', pad="2", bgcolor="white")
+
+        txt = ""
+        
+        if aux_2 != None:
+            txt +='<TR><TD bgcolor="#b8c0ff" border="1" width="50"  height="50"></TD>'
+            while aux_2:
+                txt += '<TD bgcolor="#b8c0ff" border="1" width="50"  height="50"><b><font point-size="20">' +str(aux_2.position)+'</font></b></TD>'
+                aux_2 = aux_2.nref
+            txt += '</TR>'
+
+
+        if aux_1 != None:
+            while aux_1:
+                txt +='<TR><TD bgcolor="#b8c0ff" border="1" height="50"><b><font point-size="15">'+ str(aux_1.position) +'</font></b></TD>'
+                pivote:Nodo_Contendor = aux_1.access
+                while pivote:
+                    if pivote.data == 0:
+                        txt +='<TD bgcolor="white" border="1"></TD>'
+                    else:
+                        txt +='<TD bgcolor="#f4acb7" border="1"></TD>'
+                    pivote = pivote.right
+                aux_1 = aux_1.nref
+                txt += '</TR>'
+        s.node('tab', label='<<TABLE border="0" cellspacing="0">'+txt+'</TABLE>>', shape='none')
+
+        s.render('Datos/'+name+"/"+str(self.periodo),format='jpg')

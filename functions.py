@@ -1,6 +1,7 @@
 from xml.dom import minidom
 from tkinter import filedialog
 from linked_list import LinkedList
+from linked_list_dates import LinkedListDates
 from paciente import Paciente
 from list_container import Lista_Ortogonal 
 
@@ -44,9 +45,13 @@ def lecturaArchivosXml(data):
         # CREAMOS EL OBJETO PACIENTE
         paciente_obj = Paciente(nombre, edad)
         rejillas = paciente.getElementsByTagName("celda")
+
+        lista_datos = LinkedListDates()
+        lista_datos.periodo = int(periodos)
+        lista_datos.dimension = int(m)
+
         # CREAMOS LA LISTA ORTOGONAL QUE CONTENDRÁ LAS REJILLAS
         lista = Lista_Ortogonal()
-        lista.periodos = int(periodos)
         
         #Llenamos la lista con los 0
         for i in range(int(m)):
@@ -58,7 +63,9 @@ def lecturaArchivosXml(data):
             date_f = rejilla.getAttribute("f")
             date_c = rejilla.getAttribute("c")
             lista.insert(int(date_c), int(date_f), 1)
-        paciente_obj.datos = lista
+
+        lista_datos.append(lista)    
+        paciente_obj.lista_datos = lista_datos
         
         pacientes_lista.append(paciente_obj)
     
@@ -68,7 +75,7 @@ def lecturaArchivosXml(data):
 
 def pacientes_opciones(lista:LinkedList):
     aux = lista.head
-    print("\n===== Seleccione paciente =====")
+    print("\n------ Seleccione paciente ------")
     i = 1
     while aux:
         print(str(i)+". "+aux.data.getNombre())
@@ -94,24 +101,36 @@ def paciente_opciones(paciente: Paciente):
         selection = pedirNumeroEntero()    
         
         if selection == 1:
-            lista_previa  = LinkedList()
-            print(paciente.getNombre(), paciente.getDatos().periodos)
             
             i = 1
-            lista = paciente.getDatos()
-            aux:Lista_Ortogonal = lista.analizarDatos()
-            lista_previa.append(aux)
-            while i < paciente.getDatos().periodos:
+            lista:LinkedListDates = paciente.getDatoLista()
+            aux:Lista_Ortogonal = lista.head.data
+            #IMPRIMIMOS LA LISTA ORIGINAL
+            aux.printDates(paciente.getNombre())
+            while i <= lista.periodo:
                 aux = aux.analizarDatos()
-                lista_previa.append(aux)
+                aux.periodo = i
+
+                print(aux.periodo)
+                aux.printDates(paciente.getNombre())
+                lista.append(aux)
                 i+=1
-            paciente.lista_datos = lista_previa
 
         elif selection == 2:
-            pass
+            paciente.datos.printDates()
         elif selection == 3:
             end = True
         else:
             print("Intente de nuevo")
 
-
+def compareDates(matriz_1:Lista_Ortogonal, matriz_2:Lista_Ortogonal):
+    valor = False 
+    m = matriz_1.length()
+    for i in range(m):
+            for j in range(m):
+                a = matriz_1.searchDate(i+1, j+1)
+                b = matriz_2.searchDate(i+1, j+1)
+                if a != b:
+                    valor = True
+                    break
+    return valor

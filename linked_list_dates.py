@@ -6,8 +6,10 @@ class Node:
         self.prev = None
 
 #CLASE DE LA LISTA ENLAZADA PARA GUARGAR LOS PATRONES DE CADA PISO
-class LinkedList:
+class LinkedListDates:
     def __init__(self):
+        self.dimension = 0
+        self.periodo = 0
         self.head = None
         self.last = None
 
