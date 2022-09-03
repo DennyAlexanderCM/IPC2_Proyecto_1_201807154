@@ -1,5 +1,4 @@
 from graphviz import Digraph
-from linked_list import LinkedList
 #CABEZA PRINCIPAL
 class Nodo_Head():
     def __init__(self, position):
@@ -218,7 +217,7 @@ class Lista_Ortogonal():
                         sana += 1
                     else:
                         enferma += 1
-                #--------------------------------
+                #--------------------------------EN DIAGONAL
                 if pivote.left and pivote.up and pivote.left.up:
                     dato_rejilla = pivote.left.up.data
                     if dato_rejilla == 0:
@@ -272,7 +271,7 @@ class Lista_Ortogonal():
         aux_2 = self.columnas.start_node
         
         s = Digraph('html_table')
-        s.attr(label = "Periodo: "+str(self.periodo), fontsize='35', pad="2", bgcolor="white")
+        s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1), fontsize='35', pad="2", bgcolor="white")
 
         txt = ""
         

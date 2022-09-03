@@ -1,3 +1,4 @@
+from list_container import Lista_Ortogonal
 #CLASE NODO
 class Node:
     def __init__(self,data):
@@ -55,3 +56,26 @@ class LinkedListDates:
                 n +=1 
                 i = i.next  
         return False
+
+
+    def compararDatos(self, matriz_1:Lista_Ortogonal):
+        aux = self.head
+        while aux:
+            matriz_2:Lista_Ortogonal = aux.data
+            value = self.compareDates(matriz_1, matriz_2)
+            if value:
+                return matriz_2.periodo
+            aux = aux.next
+        return None
+
+    def compareDates(self, matriz_1:Lista_Ortogonal, matriz_2:Lista_Ortogonal):
+        valor = True
+        m = matriz_1.length()
+        for i in range(m):
+                for j in range(m):
+                    a = matriz_1.searchDate(i+1, j+1)
+                    b = matriz_2.searchDate(i+1, j+1)
+                    if a != b:
+                        valor = False
+                        break
+        return valor

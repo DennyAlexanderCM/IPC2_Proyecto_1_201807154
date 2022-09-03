@@ -8,7 +8,7 @@ def run():
     selection = 0
 
     while not end:
-        print("\n============ Menú ============\n 1. Cargar archivo\n 2. Seleccionar Paciente\n 3. Other\n 4. Salir")
+        print("\n------------ Menú ------------\n  1. Cargar archivo\n  2. Seleccionar Paciente\n  3. Generar Archivo XML\n  4. Salir")
         selection = pedirNumeroEntero()
         
         if selection == 1:
@@ -21,7 +21,7 @@ def run():
         elif selection == 2:
             pacientes_opciones(lista_pacientes)
         elif selection == 3:
-            pass
+            generarXml(lista_pacientes)
         elif selection == 4:
             print("Finalizando programa...")
             end = True

@@ -42,14 +42,12 @@ def lecturaArchivosXml(data):
         periodos = paciente.getElementsByTagName("periodos")[0].firstChild.data
         # OTENEMOS LA DIMENSIÓN DE LA REJILLA
         m = paciente.getElementsByTagName("m")[0].firstChild.data
-        # CREAMOS EL OBJETO PACIENTE
-        paciente_obj = Paciente(nombre, edad)
         rejillas = paciente.getElementsByTagName("celda")
 
-        lista_datos = LinkedListDates()
-        lista_datos.periodo = int(periodos)
-        lista_datos.dimension = int(m)
-
+        # CREAMOS EL OBJETO PACIENTE
+        paciente_obj = Paciente(nombre, edad)
+        paciente_obj.setPeriodos(int(periodos))
+        paciente_obj.setM(int(m))
         # CREAMOS LA LISTA ORTOGONAL QUE CONTENDRÁ LAS REJILLAS
         lista = Lista_Ortogonal()
         
@@ -64,8 +62,7 @@ def lecturaArchivosXml(data):
             date_c = rejilla.getAttribute("c")
             lista.insert(int(date_c), int(date_f), 1)
 
-        lista_datos.append(lista)    
-        paciente_obj.lista_datos = lista_datos
+        paciente_obj.rejilla_1 = lista
         
         pacientes_lista.append(paciente_obj)
     
@@ -103,34 +100,179 @@ def paciente_opciones(paciente: Paciente):
         if selection == 1:
             
             i = 1
-            lista:LinkedListDates = paciente.getDatoLista()
-            aux:Lista_Ortogonal = lista.head.data
-            #IMPRIMIMOS LA LISTA ORIGINAL
-            aux.printDates(paciente.getNombre())
-            while i <= lista.periodo:
+            lista = LinkedListDates()
+            aux:Lista_Ortogonal = paciente.getDatos()
+            lista.append(aux)
+            encontrado = False
+
+            while i <= paciente.getPeriodos():
                 aux = aux.analizarDatos()
                 aux.periodo = i
+                resultado = lista.compararDatos(aux)
+                if resultado == None:
+                    lista.append(aux)
+                    i+=1
+                else:
+                    if resultado == 0:
+                        N = i - resultado
+                        if N > 1:
+                            lista.append(aux)
+                            paciente.setEstado("Grave")
+                            paciente.setN(resultado)
+                            print("Encontrado: ")
+                            print(" N :" + str(i))
+                            print(" Enfermedad: caso grave")
+                            
+                        elif N == 1:
+                            lista.append(aux)
+                            paciente.setEstado("Mortal")
+                            paciente.setN(resultado)
+                            print("Encontrado:")
+                            print(" N: " + str(i))
+                            print(" Enfermedad: caso incurable")
+                    else:
+                        N = i - resultado
+                        if N > 1:
+                            lista.append(aux)
+                            paciente.setEstado("Grave")
+                            paciente.setN(resultado)
+                            paciente.setN1(i-resultado)
+                            print("Encontrado: ")
+                            print(" N: " + str(resultado))
+                            print(" N1: " + str(i-resultado))
+                            print(" Enfermedad: caso grave")
+                            
+                        elif N == 1:
+                            lista.append(aux)
+                            paciente.setEstado("Mortal")
+                            paciente.setN(resultado)
+                            paciente.setN1(i-resultado)
+                            print("Encontrado: ")
+                            print(" N: " + str(resultado))
+                            print(" N1: " + str(i-resultado))
+                            print(" Enfermedad: caso incurable")
+                    encontrado = True
+                    break
+            
+            if not encontrado:
+                paciente.setEstado("Leve")
+                print("Patron no se repite")
+                print("Enfermedad: caso leve")
 
-                print(aux.periodo)
-                aux.printDates(paciente.getNombre())
-                lista.append(aux)
-                i+=1
+
+            #IMPRIME LOS DATOS GENERADOS
+            printList(lista, paciente.getNombre())
 
         elif selection == 2:
-            paciente.datos.printDates()
+            i = 1
+            lista = LinkedListDates()
+            aux:Lista_Ortogonal = paciente.getDatos()
+            lista.append(aux)
+            encontrado = False
+
+            while i <= 10000:
+                aux = aux.analizarDatos()
+                aux.periodo = i
+                resultado = lista.compararDatos(aux)
+                if resultado == None:
+                    lista.append(aux)
+                    i+=1
+                else:
+                    if resultado == 0:
+                        N = i - resultado
+                        if N > 1:
+                            lista.append(aux)
+                            paciente.setEstado("Grave")
+                            paciente.setN(resultado)
+                            print("Encontrado: ")
+                            print(" N :" + str(i))
+                            print(" Enfermedad: caso grave")
+                            
+                        elif N == 1:
+                            lista.append(aux)
+                            paciente.setEstado("Mortal")
+                            paciente.setN(resultado)
+                            print("Encontrado:")
+                            print(" N: " + str(i))
+                            print(" Enfermedad: caso incurable")
+                    else:
+                        N = i - resultado
+                        if N > 1:
+                            lista.append(aux)
+                            paciente.setEstado("Grave")
+                            paciente.setN(resultado)
+                            paciente.setN1(i-resultado)
+                            print("Encontrado: ")
+                            print(" N: " + str(resultado))
+                            print(" N1: " + str(i-resultado))
+                            print(" Enfermedad: caso grave")
+                            
+                        elif N == 1:
+                            lista.append(aux)
+                            paciente.setEstado("Mortal")
+                            paciente.setN(resultado)
+                            paciente.setN1(i-resultado)
+                            print("Encontrado: ")
+                            print(" N: " + str(resultado))
+                            print(" N1: " + str(i-resultado))
+                            print(" Enfermedad: caso incurable")
+                    encontrado = True
+                    break
+            
+            if not encontrado:
+                paciente.setEstado("Leve")
+                print("Patron no se repite")
+                print("Enfermedad: caso leve")
+    
         elif selection == 3:
             end = True
-        else:
-            print("Intente de nuevo")
 
-def compareDates(matriz_1:Lista_Ortogonal, matriz_2:Lista_Ortogonal):
-    valor = False 
-    m = matriz_1.length()
-    for i in range(m):
-            for j in range(m):
-                a = matriz_1.searchDate(i+1, j+1)
-                b = matriz_2.searchDate(i+1, j+1)
-                if a != b:
-                    valor = True
-                    break
-    return valor
+def printList(lista: LinkedListDates, name):
+    aux = lista.head
+    while aux:
+        aux.data.printDates(name)
+        aux = aux.next
+
+def generarXml(lista:LinkedList):
+    aux = lista.head
+    doc = minidom.Document()
+    pacientes = doc.createElement('pacientes')
+    doc.appendChild(pacientes)
+
+    while aux:
+        paciente_datos:Paciente = aux.data
+        paciente = doc.createElement('paciente')
+        datospersonales = doc.createElement('datospersonales')
+        nombre = doc.createElement('nombre')
+        nombre.appendChild(doc.createTextNode(paciente_datos.getNombre()))
+        datospersonales.appendChild(nombre)
+        edad = doc.createElement('edad')
+        edad.appendChild(doc.createTextNode(str(paciente_datos.getEdad())))
+        datospersonales.appendChild(edad)
+        paciente.appendChild(datospersonales)
+
+        periodos = doc.createElement('periodos')
+        periodos.appendChild(doc.createTextNode(str(paciente_datos.getPeriodos())))
+        paciente.appendChild(periodos)
+
+        m = doc.createElement('m')
+        m.appendChild(doc.createTextNode(str(paciente_datos.getM())))
+        paciente.appendChild(m)
+
+        resultado = doc.createElement('resultado')
+        resultado.appendChild(doc.createTextNode(paciente_datos.getEstado()))
+        paciente.appendChild(resultado)
+
+        if paciente_datos.getN() != 0:
+            n = doc.createElement('n')
+            n.appendChild(doc.createTextNode(str(paciente_datos.getN())))
+            paciente.appendChild(n)
+        
+        if paciente_datos.getN1() != 0:
+            n1 = doc.createElement('n1')
+            n1.appendChild(doc.createTextNode(str(paciente_datos.getN1())))
+            paciente.appendChild(n1)
+
+        pacientes.appendChild(paciente)
+        aux = aux.next
+    print (doc.toprettyxml(indent = '   '))
