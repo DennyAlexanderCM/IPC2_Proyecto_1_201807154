@@ -35,13 +35,6 @@ class LinkedList:
             n+=1
         return n
 
-    def print(self):
-        aux = self.head
-        while aux:
-            prev = aux.data
-            print(prev.getPositionX(), prev.getPositionY(),prev.getValue())
-            aux = aux.next
-
     # BUSCAMOS UN DATO EN ESPECIFICO POR SU POSICION
     def searchDate(self, selection):
         n = 1
@@ -53,3 +46,25 @@ class LinkedList:
                 n +=1 
                 i = i.next  
         return False
+    
+    def compararDatos(self, matriz_1):
+        aux = self.head
+        while aux:
+            matriz_2 = aux.data
+            value = self.compareDates(matriz_1, matriz_2)
+            if value:
+                return matriz_2.periodo
+            aux = aux.next
+        return None
+
+    def compareDates(self, matriz_1, matriz_2):
+        valor = True
+        m = matriz_1.length()
+        for i in range(m):
+                for j in range(m):
+                    a = matriz_1.searchDate(i+1, j+1)
+                    b = matriz_2.searchDate(i+1, j+1)
+                    if a != b:
+                        valor = False
+                        break
+        return valor

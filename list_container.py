@@ -147,31 +147,6 @@ class Lista_Ortogonal():
                             break
                     tmp = tmp.down 
 
-    def imprimirLista(self):
-        aux = self.filas.start_node
-        while aux:
-            txt=""
-            pivote:Nodo_Contendor = aux.access
-            while pivote:
-                txt += str(pivote.data)+"\t"
-                pivote = pivote.right
-            print(txt)
-            aux = aux.nref
-        print("fin")
-    
-    def searchNode(self, positionX, positionY):
-        aux_1 = self.filas.start_node
-
-        while aux_1:
-            if aux_1.position == positionY:
-                pivote:Nodo_Contendor = aux_1.access
-                while pivote:
-                    if pivote.positionX == positionX:
-                        return pivote
-                    pivote = pivote.right
-            aux_1 = aux_1.nref
-        return None
-
     def searchDate(self, positionX, positionY):
         aux_1 = self.filas.start_node
         while aux_1:
@@ -266,12 +241,63 @@ class Lista_Ortogonal():
             aux = aux.nref
         return i
     
-    def printDates(self, name):
+    def printDates(self, name, n, n1):
+        aux_1 = self.filas.start_node
+        aux_2 = self.columnas.start_node
+        final = n+n1
+        s = Digraph()
+
+        if n!= 0 and n1 == 0 and n == self.periodo:
+            if n == 1:
+                s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: se repite\nCaso: Mortal", fontsize='35', pad="2", bgcolor="white")
+            elif n > 1:
+                s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: se repite\nCaso: Grave", fontsize='35', pad="2", bgcolor="white")
+        
+        elif n1 != 0 and n == self.periodo:
+            if n1 == 1:
+                s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: no se repite\nPatron N1: se repite\nRepitencia de N1: "+str(n1) +"\nCaso: Mortal", fontsize='35', pad="2", bgcolor="white")
+            elif n1 > 1:
+                s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: no se repite\nPatron N1: se repite\nRepitencia de N1: "+str(n1) +"\nCaso: Grave", fontsize='35', pad="2", bgcolor="white")
+        elif final == self.periodo:
+            if n1 == 1:
+                s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: no se repite\nPatron N1: se repite\nRepitencia de N1: "+str(n1) +"\nCaso: Mortal", fontsize='35', pad="2", bgcolor="white")
+            elif n1 > 1:
+                s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: no se repite\nPatron N1: se repite\nRepitencia de N1: "+str(n1) +"\nCaso: Grave", fontsize='35', pad="2", bgcolor="white")     
+        else:
+            s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1)+ "\nPatron inicial: no se repite\nPatron N1: no se repite\nRepitencia de N1: 0", fontsize='35', pad="2", bgcolor="white")
+        
+        txt = ""
+        
+        if aux_2 != None:
+            txt +='<TR><TD bgcolor="#b8c0ff" border="1" width="50"  height="50"></TD>'
+            while aux_2:
+                txt += '<TD bgcolor="#b8c0ff" border="1" width="50"  height="50"><b><font point-size="20">' +str(aux_2.position)+'</font></b></TD>'
+                aux_2 = aux_2.nref
+            txt += '</TR>'
+
+
+        if aux_1 != None:
+            while aux_1:
+                txt +='<TR><TD bgcolor="#b8c0ff" border="1" height="50"><b><font point-size="15">'+ str(aux_1.position) +'</font></b></TD>'
+                pivote:Nodo_Contendor = aux_1.access
+                while pivote:
+                    if pivote.data == 0:
+                        txt +='<TD bgcolor="white" border="1"></TD>'
+                    else:
+                        txt +='<TD bgcolor="#f4acb7" border="1"></TD>'
+                    pivote = pivote.right
+                aux_1 = aux_1.nref
+                txt += '</TR>'
+        s.node('tab', label='<<TABLE border="0" cellspacing="0">'+txt+'</TABLE>>', shape='none')
+
+        s.render('Datos/'+name+"/"+str(self.periodo),format='jpg')
+
+    def printDatesInit(self, name):
         aux_1 = self.filas.start_node
         aux_2 = self.columnas.start_node
         
         s = Digraph('html_table')
-        s.attr(label = "Periodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1), fontsize='35', pad="2", bgcolor="white")
+        s.attr(label = "\nPaciente: "+name+"\nPatron inicial\nPeriodo: "+str(self.periodo)+"\nRejilla: "+str(self.periodo + 1), fontsize='35', pad="2", bgcolor="white")
 
         txt = ""
         

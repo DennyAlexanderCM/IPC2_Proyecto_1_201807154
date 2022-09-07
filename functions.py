@@ -1,7 +1,6 @@
 from xml.dom import minidom
 from tkinter import filedialog
 from linked_list import LinkedList
-from linked_list_dates import LinkedListDates
 from paciente import Paciente
 from list_container import Lista_Ortogonal 
 
@@ -91,17 +90,19 @@ def pacientes_opciones(lista:LinkedList):
         print("¡Ingrese una opción correcta!")
 
 def paciente_opciones(paciente: Paciente):
+    
     end = False
     selection = 0
     while not end:
-        print("\n============ Menú ============\n 1. Ejecuar periodos establecidos\n 2. Ejecutar periodos N\n 3. Regresar")
+        print("\n------------ Menú ------------\n 1. Ejecuar periodos establecidos\n 2. Ejecutar periodos N\n 3. Regresar")
         selection = pedirNumeroEntero()    
         
         if selection == 1:
-            
+            paciente.valuado = True
             i = 1
-            lista = LinkedListDates()
+            lista = LinkedList()
             aux:Lista_Ortogonal = paciente.getDatos()
+            
             lista.append(aux)
             encontrado = False
 
@@ -118,7 +119,8 @@ def paciente_opciones(paciente: Paciente):
                         if N > 1:
                             lista.append(aux)
                             paciente.setEstado("Grave")
-                            paciente.setN(resultado)
+                            paciente.setN(N)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado: ")
                             print(" N :" + str(i))
                             print(" Enfermedad: caso grave")
@@ -126,7 +128,8 @@ def paciente_opciones(paciente: Paciente):
                         elif N == 1:
                             lista.append(aux)
                             paciente.setEstado("Mortal")
-                            paciente.setN(resultado)
+                            paciente.setN(N)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado:")
                             print(" N: " + str(i))
                             print(" Enfermedad: caso incurable")
@@ -137,6 +140,7 @@ def paciente_opciones(paciente: Paciente):
                             paciente.setEstado("Grave")
                             paciente.setN(resultado)
                             paciente.setN1(i-resultado)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado: ")
                             print(" N: " + str(resultado))
                             print(" N1: " + str(i-resultado))
@@ -147,6 +151,7 @@ def paciente_opciones(paciente: Paciente):
                             paciente.setEstado("Mortal")
                             paciente.setN(resultado)
                             paciente.setN1(i-resultado)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado: ")
                             print(" N: " + str(resultado))
                             print(" N1: " + str(i-resultado))
@@ -155,17 +160,19 @@ def paciente_opciones(paciente: Paciente):
                     break
             
             if not encontrado:
+                print("\nPaciente: "+paciente.getNombre())
                 paciente.setEstado("Leve")
                 print("Patron no se repite")
                 print("Enfermedad: caso leve")
 
 
             #IMPRIME LOS DATOS GENERADOS
-            printList(lista, paciente.getNombre())
+            printList(lista, paciente)
 
         elif selection == 2:
+            paciente.valuado = False
             i = 1
-            lista = LinkedListDates()
+            lista = LinkedList()
             aux:Lista_Ortogonal = paciente.getDatos()
             lista.append(aux)
             encontrado = False
@@ -183,7 +190,8 @@ def paciente_opciones(paciente: Paciente):
                         if N > 1:
                             lista.append(aux)
                             paciente.setEstado("Grave")
-                            paciente.setN(resultado)
+                            paciente.setN(N)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado: ")
                             print(" N :" + str(i))
                             print(" Enfermedad: caso grave")
@@ -191,7 +199,8 @@ def paciente_opciones(paciente: Paciente):
                         elif N == 1:
                             lista.append(aux)
                             paciente.setEstado("Mortal")
-                            paciente.setN(resultado)
+                            paciente.setN(N)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado:")
                             print(" N: " + str(i))
                             print(" Enfermedad: caso incurable")
@@ -202,6 +211,7 @@ def paciente_opciones(paciente: Paciente):
                             paciente.setEstado("Grave")
                             paciente.setN(resultado)
                             paciente.setN1(i-resultado)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado: ")
                             print(" N: " + str(resultado))
                             print(" N1: " + str(i-resultado))
@@ -212,6 +222,7 @@ def paciente_opciones(paciente: Paciente):
                             paciente.setEstado("Mortal")
                             paciente.setN(resultado)
                             paciente.setN1(i-resultado)
+                            print("\nPaciente: "+paciente.getNombre())
                             print("Encontrado: ")
                             print(" N: " + str(resultado))
                             print(" N1: " + str(i-resultado))
@@ -220,20 +231,36 @@ def paciente_opciones(paciente: Paciente):
                     break
             
             if not encontrado:
+                print("\nPaciente: "+paciente.getNombre())
                 paciente.setEstado("Leve")
                 print("Patron no se repite")
                 print("Enfermedad: caso leve")
-    
+
+
+            #IMPRIME LOS DATOS GENERADOS
+            printList(lista, paciente)
+
         elif selection == 3:
             end = True
 
-def printList(lista: LinkedListDates, name):
+def printList(lista: LinkedList, paciente:Paciente):
+    name = paciente.getNombre()
+    #Periodo en que el pareon inicial se repite
+    n = paciente.getN()
+    #Periodo en que el patron nuevo se repite
+    n1 = paciente.getN1()
+    
     aux = lista.head
-    while aux:
-        aux.data.printDates(name)
+
+    if aux:
+        aux.data.printDatesInit(name)
         aux = aux.next
+        while aux:
+            aux.data.printDates(name, n, n1)
+            aux = aux.next
 
 def generarXml(lista:LinkedList):
+    f = open("Datos generales.xml","w+", encoding="utf-8")
     aux = lista.head
     doc = minidom.Document()
     pacientes = doc.createElement('pacientes')
@@ -275,4 +302,87 @@ def generarXml(lista:LinkedList):
 
         pacientes.appendChild(paciente)
         aux = aux.next
-    print (doc.toprettyxml(indent = '   '))
+    xml = doc.toprettyxml(indent = '   ')
+    print (xml)
+    f.write(xml)
+    print("Realizado")
+
+def valuarPacientes(lista:LinkedList):
+    print("Efectuando análisis a pacientes faltantes")
+
+    aux = lista.head
+    while aux:
+        if aux.data.valuado is False:
+            paciente:Paciente = aux.data
+            i = 1
+            lista = LinkedList()
+            aux_2:Lista_Ortogonal = paciente.getDatos()
+            
+            lista.append(aux_2)
+            encontrado = False
+
+            while i <= paciente.getPeriodos():
+                aux_2 = aux_2.analizarDatos()
+                aux_2.periodo = i
+                resultado = lista.compararDatos(aux_2)
+                if resultado == None:
+                    lista.append(aux_2)
+                    i+=1
+                else:
+                    if resultado == 0:
+                        N = i - resultado
+                        if N > 1:
+                            aux_2.repetido = True
+                            lista.append(aux_2)
+                            paciente.setEstado("Grave")
+                            paciente.setN(N)
+                            print("\nPaciente: "+paciente.getNombre())
+                            print("Encontrado: ")
+                            print(" N :" + str(i))
+                            print(" Enfermedad: caso grave")
+                            
+                        elif N == 1:
+                            aux_2.repetido = True
+                            lista.append(aux_2)
+                            paciente.setEstado("Mortal")
+                            paciente.setN(N)
+                            print("\nPaciente: "+paciente.getNombre())
+                            print("Encontrado:")
+                            print(" N: " + str(i))
+                            print(" Enfermedad: caso incurable")
+                    else:
+                        N = i - resultado
+                        if N > 1:
+                            aux_2.repetido = True
+                            lista.append(aux_2)
+                            paciente.setEstado("Grave")
+                            paciente.setN(resultado)
+                            paciente.setN1(i-resultado)
+                            print("\nPaciente: "+paciente.getNombre())
+                            print("Encontrado: ")
+                            print(" N: " + str(resultado))
+                            print(" N1: " + str(i-resultado))
+                            print(" Enfermedad: caso grave")
+                            
+                        elif N == 1:
+                            aux_2.repetido = True
+                            lista.append(aux_2)
+                            paciente.setEstado("Mortal")
+                            paciente.setN(resultado)
+                            paciente.setN1(i-resultado)
+                            print("\nPaciente: "+paciente.getNombre())
+                            print("Encontrado: ")
+                            print(" N: " + str(resultado))
+                            print(" N1: " + str(i-resultado))
+                            print(" Enfermedad: caso incurable")
+                    encontrado = True
+                    break
+            
+            if not encontrado:
+                paciente.setEstado("Leve")
+                paciente.setN(0)
+                paciente.setN1(0)
+                print("\nPaciente: "+paciente.getNombre())
+                print("Patron no se repite")
+                print("Enfermedad: caso leve")
+        aux = aux.next

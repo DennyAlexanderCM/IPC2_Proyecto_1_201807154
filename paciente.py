@@ -5,6 +5,7 @@ class Paciente:
         self.rejilla_1 = None
         self.periodos = 0
         self.estado = None
+        self.valuado = False
         #PERIODO EN QUE SE REPITE EL PATRON INICIAL
         self.N = 0
         #PERIODO EN QUE SE REPITE EL PATRON NUEVO

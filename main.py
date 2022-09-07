@@ -1,8 +1,7 @@
 from functions import *
 
-lista_pacientes = LinkedList()
-
 def run():
+    lista_pacientes = LinkedList()
     
     end = False
     selection = 0
@@ -20,8 +19,14 @@ def run():
 
         elif selection == 2:
             pacientes_opciones(lista_pacientes)
+
         elif selection == 3:
-            generarXml(lista_pacientes)
+            if lista_pacientes.length()>0:
+                valuarPacientes(lista_pacientes)
+                generarXml(lista_pacientes)
+            else:
+                print("Lista vacía")
+                
         elif selection == 4:
             print("Finalizando programa...")
             end = True
